@@ -25,6 +25,9 @@ def add_patient(first_name, last_name, contract):
     First checks for existing patient based on name, and generates a new client ID.
     The phase is always set to 1 for new patients.
     A journal entry is also created in the Transactions table.
+
+    Returns:
+        dict: A response dictionary containing a message and a status code.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -41,11 +44,13 @@ def add_patient(first_name, last_name, contract):
         existing_patient = cursor.fetchone()
 
         if existing_patient:
-            print(
-                f"Patient '{first_name} {last_name}' is already in the database. "
-                "Check records for duplicate name and manually enter the patient if necessary."
-            )
-            return
+            return {
+                "message": (
+                    f"Patient '{first_name} {last_name}' is already in the database. "
+                    "Check records for duplicate name and manually enter the patient if necessary."
+                ),
+                "status": "failure"
+            }
 
         # Generate a new ClientID by finding the max in the Clients table and adding 1
         cursor.execute("SELECT MAX(ClientID) FROM Clients")
@@ -85,12 +90,19 @@ def add_patient(first_name, last_name, contract):
         # Commit the transaction
         conn.commit()
 
-        print(f"Patient '{first_name} {last_name}' added successfully with ClientID {new_client_id} and Phase 1.")
-        print(f"Transaction '{new_transaction_id}' created with description 'Beginning Balance'.")
+        return {
+            "message": (
+                f"Patient '{first_name} {last_name}' added successfully with ClientID {new_client_id} and Phase 1. "
+                f"Transaction '{new_transaction_id}' created with description 'Beginning Balance'."
+            ),
+            "status": "success"
+        }
 
     except pyodbc.Error as e:
-        print(f"Error adding patient: {e}")
-        raise
+        return {
+            "message": f"An error occurred while adding the patient: {str(e)}",
+            "status": "error"
+        }
     finally:
         cursor.close()
         conn.close()
@@ -105,7 +117,7 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
         reason_for_discharge (str): Reason for discharge (used in the transaction description).
 
     Returns:
-        None
+        dict: A response dictionary containing a message and a status code.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -122,15 +134,19 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
         patient = cursor.fetchone()
 
         if not patient:
-            print(f"No patient found with the name '{first_name} {last_name}'.")
-            return
+            return {
+                "message": f"No patient found with the name '{first_name} {last_name}'.",
+                "status": "failure"
+            }
 
         client_id, phase = patient
 
         # Check if the patient is already discharged.
-        if phase == 4:
-            print(f"Patient '{first_name} {last_name}' has already been discharged.")
-            return
+        if int(phase) == 4:
+            return {
+                "message": f"Patient '{first_name} {last_name}' has already been discharged.",
+                "status": "failure"
+            }
 
         # Update the patient's Discharged status to True
         cursor.execute(
@@ -139,7 +155,7 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
             SET Phase = 4
             WHERE ClientID = ?
             """,
-            (client_id)
+            (client_id,)
         )
 
         # Generate a transaction entry for the discharge
@@ -166,12 +182,17 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
         # Commit the transaction
         conn.commit()
 
-        print(f"Patient '{first_name} {last_name}' has been discharged successfully.")
-        print(f"Transaction '{new_transaction_id}' created with description '{reason_for_discharge}'.")
+        return {
+            "message": f"Patient '{first_name} {last_name}' discharged successfully with reason: '{reason_for_discharge}'.",
+            "status": "success"
+        }
 
     except pyodbc.Error as e:
         print(f"Error discharging patient: {e}")
-        raise
+        return {
+            "message": "An error occurred while discharging the patient.",
+            "status": "error"
+        }
     finally:
         cursor.close()
         conn.close()

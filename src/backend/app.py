@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from backend.db import get_connection, add_patient, discharge_patient
+from .db import get_connection, add_patient, discharge_patient
 
 # Initialize the FastAPI application
 app = FastAPI()
@@ -57,15 +57,22 @@ async def add_patient_endpoint(
     """
     try:
         # Add patient information to the database
-        add_patient(first_name, last_name, contract)
-        return {"message": f"Patient '{first_name} {last_name}' added successfully with a 'Beginning Balance' transaction."}
+        result = add_patient(first_name, last_name, contract)
+
+        # Return appropriate response based on the result
+        if result["status"] == "success":
+            return {"message": result["message"]}
+        elif result["status"] == "failure":
+            raise HTTPException(status_code=409, detail=result["message"])  # Conflict
+        else:
+            raise HTTPException(status_code=500, detail="Unexpected error occurred.")
     except Exception as e:
-        # Raise an HTTP exception with an error message if patient addition fails
-        if "already in the database" in str(e):
-            raise HTTPException(status_code=409, detail=str(e))  # Conflict
+        # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error adding patient: {e}")
 
 # Endpoint to discharge an existing patient
+from fastapi import HTTPException
+
 @app.put("/discharge-patient/")
 async def discharge_patient_endpoint(
     first_name: str, 
@@ -87,15 +94,19 @@ async def discharge_patient_endpoint(
         HTTPException: If an error occurs while discharging the patient.
     """
     try:
-        # Discharge the patient using the provided first and last name and reason for discharge
-        discharge_patient(first_name, last_name, reason_for_discharge)
-        return {
-            "message": f"Patient '{first_name} {last_name}' discharged successfully with reason: '{reason_for_discharge}'."
-        }
+        # Call the function to discharge the patient
+        result = discharge_patient(first_name, last_name, reason_for_discharge)
+
+        # Handle response based on the status
+        if result["status"] == "success":
+            return {"message": result["message"]}
+        elif result["status"] == "failure":
+            if "already been discharged" in result["message"]:
+                raise HTTPException(status_code=409, detail=result["message"])  # Conflict
+            if "No patient found" in result["message"]:
+                raise HTTPException(status_code=404, detail=result["message"])  # Not Found
+            raise HTTPException(status_code=400, detail=result["message"])  # Other Failure
+
     except Exception as e:
-        # Raise an HTTP exception with an error message if patient discharge fails
-        if "has already been discharged" in str(e):
-            raise HTTPException(status_code=409, detail=str(e))  # Conflict
-        if "No patient found" in str(e):
-            raise HTTPException(status_code=404, detail=str(e))  # Not Found
+        # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error discharging patient: {e}")
