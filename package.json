@@ -1,0 +1,19 @@
+{
+  "name": "clienttrustmanagement2.0",
+  "version": "1.0.0",
+  "main": "src/frontend/main.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^33.2.0"
+  }
+}
