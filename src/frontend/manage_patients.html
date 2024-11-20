@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Patients - Client Trust Management</title>
+  <title>Client Trust Management - Manage Patients</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -65,10 +65,12 @@
     </div>
   </div>
   <script>
+    // Navigation to Admissions Page
     document.getElementById("admissions-btn").addEventListener("click", () => {
       window.electronAPI.navigateTo("admissions.html"); // Navigate to Admissions page
     });
 
+    // Navigation to Discharges Page
     document.getElementById("discharges-btn").addEventListener("click", () => {
       window.electronAPI.navigateTo("discharges.html"); // Navigate to Discharges page
     });

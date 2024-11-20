@@ -11,6 +11,12 @@ class AddPatientRequest(BaseModel):
     last_name: str
     contract: str
 
+# Define the input schema for discharging a patient
+class DischargePatientRequest(BaseModel):
+    first_name: str
+    last_name: str
+    reason_for_discharge: str
+
 # Root endpoint to provide a welcome message
 @app.get("/")
 async def root():
@@ -66,19 +72,14 @@ async def add_patient_endpoint(patient: AddPatientRequest):
         # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error adding patient: {e}")
 
+# Endpoint to discharge an existing patient
 @app.put("/discharge-patient/")
-async def discharge_patient_endpoint(
-    first_name: str, 
-    last_name: str, 
-    reason_for_discharge: str
-):
+async def discharge_patient_endpoint(patient: DischargePatientRequest):
     """
     Endpoint to discharge a patient.
 
     Args:
-        first_name (str): First name of the patient to be discharged.
-        last_name (str): Last name of the patient to be discharged.
-        reason_for_discharge (str): Reason for discharging the patient.
+        patient (DischargePatientRequest): The patient data sent in the request body.
 
     Returns:
         dict: A success message if the patient is discharged successfully.
@@ -88,7 +89,11 @@ async def discharge_patient_endpoint(
     """
     try:
         # Call the function to discharge the patient
-        result = discharge_patient(first_name, last_name, reason_for_discharge)
+        result = discharge_patient(
+            patient.first_name, 
+            patient.last_name, 
+            patient.reason_for_discharge
+        )
 
         # Handle response based on the status
         if result["status"] == "success":
