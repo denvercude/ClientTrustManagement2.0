@@ -1,8 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from .db import get_connection, add_patient, discharge_patient
+from pydantic import BaseModel
 
 # Initialize the FastAPI application
 app = FastAPI()
+
+# Define the input schema for adding a patient
+class AddPatientRequest(BaseModel):
+    first_name: str
+    last_name: str
+    contract: str
 
 # Root endpoint to provide a welcome message
 @app.get("/")
@@ -36,28 +43,17 @@ async def test_db():
 
 # Endpoint to add a new patient to the database
 @app.post("/add-patient/")
-async def add_patient_endpoint(
-    first_name: str, 
-    last_name: str, 
-    contract: str
-):
+async def add_patient_endpoint(patient: AddPatientRequest):
     """
     Endpoint to add a new patient to the system.
-
     Args:
-        first_name (str): First name of the patient.
-        last_name (str): Last name of the patient.
-        contract (str): Contract details.
-
+        patient (AddPatientRequest): The patient data sent in the request body.
     Returns:
-        dict: A success message or information about a potential conflict.
-
-    Raises:
-        HTTPException: If an error occurs while adding the patient.
+        dict: A success message or error message.
     """
     try:
         # Add patient information to the database
-        result = add_patient(first_name, last_name, contract)
+        result = add_patient(patient.first_name, patient.last_name, patient.contract)
 
         # Return appropriate response based on the result
         if result["status"] == "success":
@@ -69,9 +65,6 @@ async def add_patient_endpoint(
     except Exception as e:
         # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error adding patient: {e}")
-
-# Endpoint to discharge an existing patient
-from fastapi import HTTPException
 
 @app.put("/discharge-patient/")
 async def discharge_patient_endpoint(

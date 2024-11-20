@@ -3,10 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Trust Management</title>
+  <title>Login - Client Trust Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .login-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 300px;
+    }
+    .login-container h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    .login-container input {
+      width: 100%;
+      max-width: 250px;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .login-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Client Trust Management</h1>
-  <p>This is the frontend of your Electron app!</p>
+  <div class="login-container">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-button">Login</button>
+  </div>
+  <script>
+    document.getElementById('login-button').addEventListener('click', () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+  
+      if (username && password) {
+        // Use the secure API to navigate to the dashboard
+        window.electronAPI.navigateTo('dashboard.html');
+      } else {
+        alert('Please enter a valid username and password.');
+      }
+    });
+  </script>
 </body>
 </html>

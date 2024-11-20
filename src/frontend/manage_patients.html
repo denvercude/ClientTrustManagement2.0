@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Patients - Client Trust Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .title {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    .container {
+      text-align: center;
+    }
+    .task-card {
+      background: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 250px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+    .task-card:hover {
+      transform: scale(1.05);
+    }
+    .task-card h3 {
+      margin: 0;
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #007bff;
+    }
+    .task-card p {
+      margin: 0;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">Ins/Outs</div>
+  <div class="container">
+    <div class="task-card" id="admissions-btn">
+      <h3>Admissions</h3>
+      <p>Manage patient admissions.</p>
+    </div>
+    <div class="task-card" id="discharges-btn">
+      <h3>Discharges</h3>
+      <p>Handle patient discharges.</p>
+    </div>
+  </div>
+  <script>
+    document.getElementById("admissions-btn").addEventListener("click", () => {
+      window.electronAPI.navigateTo("admissions.html"); // Navigate to Admissions page
+    });
+
+    document.getElementById("discharges-btn").addEventListener("click", () => {
+      window.electronAPI.navigateTo("discharges.html"); // Navigate to Discharges page
+    });
+  </script>
+</body>
+</html>

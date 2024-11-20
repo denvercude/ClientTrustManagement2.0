@@ -8,17 +8,32 @@ app.on('ready', () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), // Optional: add preload.js for security
-      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'), // Enable preload for secure communication
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 });
 
-// Quit the app when all windows are closed
+// Function to navigate between pages
+function loadPage(page) {
+  mainWindow.loadFile(path.join(__dirname, page));
+}
+
+// Export the `loadPage` function for use in the preload script
+module.exports = { loadPage };
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+const { ipcMain } = require('electron');
+
+// Handle navigation requests from the renderer process
+ipcMain.on('navigate-to', (event, page) => {
+  loadPage(page);
 });
