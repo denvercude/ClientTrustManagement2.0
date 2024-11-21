@@ -88,6 +88,10 @@
       <h3>Discharges</h3>
       <p>Manage patient discharges.</p>
     </div>
+    <div class="task-card" id="update-phase-btn">
+      <h3>Update Phase</h3>
+      <p>Update patient phase status.</p>
+    </div>
   </div>
   <script>
     // Navigation to Admissions Page
@@ -98,6 +102,10 @@
     // Navigation to Discharges Page
     document.getElementById("discharges-btn").addEventListener("click", () => {
       window.electronAPI.navigateTo("discharges.html"); // Navigate to Discharges page
+    });
+
+    document.getElementById("update-phase-btn").addEventListener("click", () => {
+      window.electronAPI.navigateTo("update_phase.html"); // Navigate to Admissions page
     });
   </script>
 </body>
