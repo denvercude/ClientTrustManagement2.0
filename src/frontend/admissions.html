@@ -138,7 +138,7 @@
     .status-list h3 {
       color: #333;
     }
-
+    
     .status-list .section {
       flex: 1;
       overflow-y: auto; /* Handles scrolling if the content overflows */
@@ -246,7 +246,7 @@
               li.textContent = `${patient.first_name} ${patient.last_name}`;
               li.classList.add("success");
               successList.appendChild(li);
-            } else if (result.message.includes("already in the database")) {
+            } else {
               const li = document.createElement("li");
               li.textContent = `${patient.first_name} ${patient.last_name}`;
               li.classList.add("duplicate");

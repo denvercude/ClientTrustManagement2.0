@@ -75,36 +75,25 @@ async def add_patient_endpoint(patient: AddPatientRequest):
 # Endpoint to discharge an existing patient
 @app.put("/discharge-patient/")
 async def discharge_patient_endpoint(patient: DischargePatientRequest):
-    """
-    Endpoint to discharge a patient.
-
-    Args:
-        patient (DischargePatientRequest): The patient data sent in the request body.
-
-    Returns:
-        dict: A success message if the patient is discharged successfully.
-
-    Raises:
-        HTTPException: If an error occurs while discharging the patient.
-    """
     try:
-        # Call the function to discharge the patient
         result = discharge_patient(
             patient.first_name, 
             patient.last_name, 
             patient.reason_for_discharge
         )
 
-        # Handle response based on the status
         if result["status"] == "success":
             return {"message": result["message"]}
         elif result["status"] == "failure":
             if "already been discharged" in result["message"]:
-                raise HTTPException(status_code=409, detail=result["message"])  # Conflict
+                raise HTTPException(status_code=409, detail=result["message"])
             if "No patient found" in result["message"]:
-                raise HTTPException(status_code=404, detail=result["message"])  # Not Found
-            raise HTTPException(status_code=400, detail=result["message"])  # Other Failure
+                raise HTTPException(status_code=404, detail=result["message"])
+            raise HTTPException(status_code=400, detail=result["message"])
 
+    except HTTPException as http_exc:
+        # Reraise known HTTP exceptions
+        raise http_exc
     except Exception as e:
         # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error discharging patient: {e}")

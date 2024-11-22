@@ -237,11 +237,14 @@
               successList.appendChild(li);
             } else {
               const li = document.createElement("li");
-              li.textContent = `Error: ${result.message}`;
+              li.textContent = `${patient.first_name} ${patient.last_name} - Error: ${result.detail || "Unknown error"}`;
               errorList.appendChild(li);
             }
           } catch (error) {
             console.error("Error:", error);
+            const li = document.createElement("li");
+            li.textContent = `${patient.first_name} ${patient.last_name} - Error: Network or Server Error`;
+            errorList.appendChild(li);
           }
         }
       }
