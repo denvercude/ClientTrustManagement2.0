@@ -38,7 +38,6 @@
       display: flex;
       gap: 20px;
       width: 100%;
-      height: calc(100% - 60px);
       max-width: 800px;
       box-sizing: border-box;
     }
@@ -67,9 +66,9 @@
     }
     table {
       width: 100%;
+      table-layout: fixed;
       margin: 20px 0;
       border-collapse: collapse;
-      table-layout: fixed;
     }
 
     table th, table td {
@@ -92,15 +91,6 @@
       box-sizing: border-box;
     }
 
-    table {
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    th:nth-child(1), td:nth-child(1) { width: 30%; } /* First Name column */
-    th:nth-child(2), td:nth-child(2) { width: 30%; } /* Last Name column */
-    th:nth-child(3), td:nth-child(3) { width: 40%; } /* Phase column */
-
     .actions {
       text-align: center;
     }
@@ -116,19 +106,6 @@
       background-color: #0056b3;
     }
 
-    #add-row {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 5px 10px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    #add-row:hover {
-      background-color: #0056b3;
-    }
     .status-list {
       display: flex;
       flex-direction: column;
@@ -138,18 +115,26 @@
     .status-list h3 {
       color: #333;
     }
-    
-    .status-list .section {
-      flex: 1;
+
+    .status-list ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
       overflow-y: auto;
+      max-height: 200px;
     }
 
-    .status-list .success-section {
-      align-self: flex-start;
+    .status-list ul li {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
     }
 
-    .status-list .duplicate-section {
-      align-self: flex-end;
+    .status-list ul li.success {
+      color: green;
+    }
+
+    .status-list ul li.error {
+      color: red;
     }
   </style>
 </head>
@@ -161,63 +146,53 @@
   <div class="title">Update Patient Phase</div>
   <div class="container">
     <div class="left">
-      <table id="admissions-table">
+      <table id="phase-table">
         <thead>
           <tr>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Phase</th>
+            <th>New Phase</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Default rows will be dynamically added -->
+          <!-- Rows will be dynamically added -->
         </tbody>
       </table>
       <button id="add-row">Add Row</button>
       <div class="actions">
-        <button id="update-all">Update Phase All</button>
+        <button id="update-all">Update All</button>
       </div>
     </div>
     <div class="right">
       <div class="status-list">
-        <h3>Successfully Updated Phase for:</h3>
-        <ul id="success-list">
-          <!-- Successfully added patients will appear here -->
-        </ul>
-        <h3>Patient Already Selected Phase:</h3>
-        <ul id="duplicate-list">
-          <!-- Duplicate patients will appear here -->
-        </ul>
+        <h3>Successfully Updated:</h3>
+        <ul id="success-list"></ul>
+        <h3>Errors:</h3>
+        <ul id="error-list"></ul>
       </div>
     </div>
   </div>
   <script>
-    const tableBody = document.querySelector("#admissions-table tbody");
+    const tableBody = document.querySelector("#phase-table tbody");
     const successList = document.querySelector("#success-list");
-    const duplicateList = document.querySelector("#duplicate-list");
+    const errorList = document.querySelector("#error-list");
 
-    // Add a default row
     function addRow(firstName = "", lastName = "", phase = "") {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td><input type="text" placeholder="First Name" value="${firstName}" /></td>
         <td><input type="text" placeholder="Last Name" value="${lastName}" /></td>
-        <td><input type="text" placeholder="Contract" value="${phase}" /></td>
+        <td><input type="text" placeholder="New Phase" value="${phase}" /></td>
       `;
       tableBody.appendChild(row);
     }
 
-    // Add initial rows
     for (let i = 0; i < 5; i++) {
       addRow();
     }
 
-    // Add new row on button click
-    document.getElementById("add-row").addEventListener("click", () => {
-      addRow();
-    });
+    document.getElementById("add-row").addEventListener("click", () => addRow());
 
-    // Add all patients to the database
     document.getElementById("update-all").addEventListener("click", async () => {
       const rows = Array.from(tableBody.querySelectorAll("tr"));
       const patients = rows.map(row => {
@@ -225,18 +200,18 @@
         return {
           first_name: inputs[0].value.trim(),
           last_name: inputs[1].value.trim(),
-          contract: inputs[2].value.trim(),
+          new_phase: parseInt(inputs[2].value.trim(), 10),
         };
       });
 
       successList.innerHTML = "";
-      duplicateList.innerHTML = "";
+      errorList.innerHTML = "";
 
       for (const patient of patients) {
-        if (patient.first_name && patient.last_name && patient.contract) {
+        if (patient.first_name && patient.last_name && !isNaN(patient.new_phase)) {
           try {
-            const response = await fetch("http://127.0.0.1:8000/add-patient/", {
-              method: "POST",
+            const response = await fetch("http://127.0.0.1:8000/update-phase/", {
+              method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(patient),
             });
@@ -246,14 +221,18 @@
               li.textContent = `${patient.first_name} ${patient.last_name}`;
               li.classList.add("success");
               successList.appendChild(li);
-            } else if (result.message.includes("already in the database")) {
+            } else {
               const li = document.createElement("li");
-              li.textContent = `${patient.first_name} ${patient.last_name}`;
-              li.classList.add("duplicate");
-              duplicateList.appendChild(li);
+              li.textContent = `${patient.first_name} ${patient.last_name} - Error: ${result.detail || "Unknown error"}`;
+              li.classList.add("error");
+              errorList.appendChild(li);
             }
           } catch (error) {
             console.error("Error:", error);
+            const li = document.createElement("li");
+            li.textContent = `${patient.first_name} ${patient.last_name} - Error: Network or Server Error`;
+            li.classList.add("error");
+            errorList.appendChild(li);
           }
         }
       }

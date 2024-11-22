@@ -196,3 +196,72 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
     finally:
         cursor.close()
         conn.close()
+
+def update_phase(first_name, last_name, new_phase):
+    """
+    Updates the phase for a patient in the database.
+
+    Args:
+        first_name (str): First name of the patient.
+        last_name (str): Last name of the patient.
+        new_phase (int): The desired new phase to update to.
+
+    Returns:
+        dict: A response dictionary containing a message and a status code.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check if a patient with the same first and last name exists
+        cursor.execute(
+            """
+            SELECT ClientID, Phase FROM Clients
+            WHERE FirstName = ? AND LastName = ?
+            """,
+            (first_name, last_name)
+        )
+        patient = cursor.fetchone()
+
+        if not patient:
+            return {
+                "message": f"No patient found with the name '{first_name} {last_name}'.",
+                "status": "failure"
+            }
+
+        client_id, current_phase = patient
+
+        # Check if the patient is already in the requested phase
+        if int(current_phase) == int(new_phase):
+            return {
+                "message": f"Patient '{first_name} {last_name}' is already in phase {new_phase}.",
+                "status": "failure"
+            }
+
+        # Update the phase for the patient
+        cursor.execute(
+            """
+            UPDATE Clients
+            SET Phase = ?
+            WHERE ClientID = ?
+            """,
+            (new_phase, client_id)
+        )
+
+        # Commit the transaction
+        conn.commit()
+
+        return {
+            "message": f"Phase for patient '{first_name} {last_name}' successfully updated to {new_phase}.",
+            "status": "success"
+        }
+
+    except pyodbc.Error as e:
+        print(f"Error updating phase: {e}")
+        return {
+            "message": "An error occurred while updating the phase.",
+            "status": "error"
+        }
+    finally:
+        cursor.close()
+        conn.close()

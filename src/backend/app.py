@@ -1,21 +1,26 @@
 from fastapi import FastAPI, HTTPException
-from .db import get_connection, add_patient, discharge_patient
+from .db import get_connection, add_patient, discharge_patient, update_phase
 from pydantic import BaseModel
 
-# Initialize the FastAPI application
+
 app = FastAPI()
 
-# Define the input schema for adding a patient
+
 class AddPatientRequest(BaseModel):
     first_name: str
     last_name: str
     contract: str
 
-# Define the input schema for discharging a patient
+
 class DischargePatientRequest(BaseModel):
     first_name: str
     last_name: str
     reason_for_discharge: str
+
+class UpdatePhaseRequest(BaseModel):
+    first_name: str
+    last_name: str
+    new_phase: int
 
 # Root endpoint to provide a welcome message
 @app.get("/")
@@ -97,3 +102,37 @@ async def discharge_patient_endpoint(patient: DischargePatientRequest):
     except Exception as e:
         # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error discharging patient: {e}")
+    
+@app.put("/update-phase/")
+async def update_phase_endpoint(patient: UpdatePhaseRequest):
+    """
+    Endpoint to update the phase for an existing patient.
+    Args:
+        patient (UpdatePhaseRequest): The patient data sent in the request body.
+    Returns:
+        dict: A success message or error message.
+    """
+    try:
+        # Call the update_phase function with input data
+        result = update_phase(
+            patient.first_name,
+            patient.last_name,
+            patient.new_phase
+        )
+
+        # Handle success and failure cases
+        if result["status"] == "success":
+            return {"message": result["message"]}
+        elif result["status"] == "failure":
+            if "already in phase" in result["message"]:
+                raise HTTPException(status_code=409, detail=result["message"])
+            if "No patient found" in result["message"]:
+                raise HTTPException(status_code=404, detail=result["message"])
+            raise HTTPException(status_code=400, detail=result["message"])
+
+    except HTTPException as http_exc:
+        # Reraise known HTTP exceptions
+        raise http_exc
+    except Exception as e:
+        # Handle unexpected errors
+        raise HTTPException(status_code=400, detail=f"Error updating phase: {e}")
