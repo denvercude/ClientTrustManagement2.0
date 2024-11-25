@@ -8,21 +8,21 @@ app.on('ready', () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), // Enable preload for secure communication
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
 
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  mainWindow.loadFile(path.join(__dirname, 'index/index.html'));
 });
 
-// Function to navigate between pages
+
 function loadPage(page) {
   mainWindow.loadFile(path.join(__dirname, page));
 }
 
-// Export the `loadPage` function for use in the preload script
+
 module.exports = { loadPage };
 
 app.on('window-all-closed', () => {

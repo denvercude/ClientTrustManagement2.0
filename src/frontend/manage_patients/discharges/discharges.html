@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Trust Management - Update Phase</title>
+  <title>Client Trust Management - Discharges</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -106,6 +106,19 @@
       background-color: #0056b3;
     }
 
+    #add-row {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    #add-row:hover {
+      background-color: #0056b3;
+    }
     .status-list {
       display: flex;
       flex-direction: column;
@@ -115,92 +128,94 @@
     .status-list h3 {
       color: #333;
     }
-
-    .status-list ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
+    
+    .status-list .section {
+      flex: 1;
       overflow-y: auto;
-      max-height: 200px;
     }
 
-    .status-list ul li {
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
+    .status-list .success-section {
+      align-self: flex-start;
     }
 
-    .status-list ul li.success {
-      color: green;
-    }
-
-    .status-list ul li.error {
-      color: red;
+    .status-list .duplicate-section {
+      align-self: flex-end;
     }
   </style>
 </head>
 <body>
   <div class="top-buttons">
-    <button onclick="location.href='dashboard.html'">Dashboard</button>
-    <button onclick="location.href='manage_patients.html'">Back</button>
+    <button onclick="location.href='../../dashboard/dashboard.html'">Dashboard</button>
+    <button onclick="location.href='../manage_patients.html'">Back</button>
   </div>
-  <div class="title">Update Patient Phase</div>
+  <div class="title">Discharges</div>
   <div class="container">
     <div class="left">
-      <table id="phase-table">
+      <table id="discharges-table">
         <thead>
           <tr>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>New Phase</th>
+            <th>Reason for Discharge</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Rows will be dynamically added -->
+          <!-- Default rows will be dynamically added -->
         </tbody>
       </table>
       <button id="add-row">Add Row</button>
       <div class="actions">
-        <button id="update-all">Update All</button>
+        <button id="discharge-all">Discharge All Patients</button>
       </div>
     </div>
     <div class="right">
       <div class="status-list">
-        <h3>Successfully Updated:</h3>
-        <ul id="success-list"></ul>
+        <h3>Successfully Discharged Patients:</h3>
+        <ul id="success-list">
+          <!-- Successfully discharged patients will appear here -->
+        </ul>
         <h3>Errors:</h3>
-        <ul id="error-list"></ul>
+        <ul id="error-list">
+          <!-- Error messages will appear here -->
+        </ul>
       </div>
     </div>
   </div>
   <script>
-    const tableBody = document.querySelector("#phase-table tbody");
+    const tableBody = document.querySelector("#discharges-table tbody");
     const successList = document.querySelector("#success-list");
     const errorList = document.querySelector("#error-list");
 
-    function addRow(firstName = "", lastName = "", phase = "") {
+    // Add a default row
+    function addRow(firstName = "", lastName = "", reason = "") {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td><input type="text" placeholder="First Name" value="${firstName}" /></td>
         <td><input type="text" placeholder="Last Name" value="${lastName}" /></td>
-        <td><input type="text" placeholder="New Phase" value="${phase}" /></td>
+        <td><input type="text" placeholder="Reason for Discharge" value="${reason}" /></td>
       `;
       tableBody.appendChild(row);
     }
 
+    // Add initial rows
     for (let i = 0; i < 5; i++) {
       addRow();
     }
 
-    document.getElementById("add-row").addEventListener("click", () => addRow());
+    // Add new row on button click
+    document.getElementById("add-row").addEventListener("click", () => {
+      addRow();
+    });
 
-    document.getElementById("update-all").addEventListener("click", async () => {
+    // Discharge all patients
+    document.getElementById("discharge-all").addEventListener("click", async () => {
       const rows = Array.from(tableBody.querySelectorAll("tr"));
       const patients = rows.map(row => {
         const inputs = row.querySelectorAll("input");
         return {
           first_name: inputs[0].value.trim(),
           last_name: inputs[1].value.trim(),
-          new_phase: parseInt(inputs[2].value.trim(), 10),
+          reason_for_discharge: inputs[2].value.trim(),
         };
       });
 
@@ -208,9 +223,9 @@
       errorList.innerHTML = "";
 
       for (const patient of patients) {
-        if (patient.first_name && patient.last_name && !isNaN(patient.new_phase)) {
+        if (patient.first_name && patient.last_name && patient.reason_for_discharge) {
           try {
-            const response = await fetch("http://127.0.0.1:8000/update-phase/", {
+            const response = await fetch("http://127.0.0.1:8000/discharge-patient/", {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(patient),
@@ -219,19 +234,16 @@
             if (response.ok) {
               const li = document.createElement("li");
               li.textContent = `${patient.first_name} ${patient.last_name}`;
-              li.classList.add("success");
               successList.appendChild(li);
             } else {
               const li = document.createElement("li");
               li.textContent = `${patient.first_name} ${patient.last_name} - Error: ${result.detail || "Unknown error"}`;
-              li.classList.add("error");
               errorList.appendChild(li);
             }
           } catch (error) {
             console.error("Error:", error);
             const li = document.createElement("li");
             li.textContent = `${patient.first_name} ${patient.last_name} - Error: Network or Server Error`;
-            li.classList.add("error");
             errorList.appendChild(li);
           }
         }

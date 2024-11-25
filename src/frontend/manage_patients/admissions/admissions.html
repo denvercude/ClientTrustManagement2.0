@@ -6,46 +6,69 @@
   <title>Client Trust Management - Admissions</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: #f4f9ff;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      height: 90vh;
     }
-    .top-buttons {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+
+    .header {
+      width: 100%;
+      background: #e3f2fd;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       display: flex;
-      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
     }
-    .top-buttons button {
+
+    .header button {
       padding: 10px 15px;
-      background-color: #007bff;
+      background-color: #1976d2;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-right: 10px;
     }
-    .top-buttons button:hover {
-      background-color: #0056b3;
+
+    .header button:hover {
+      background-color: #1565c0;
     }
+
+    .header .title {
+      font-size: 36px;
+      color: #1565c0;
+      font-weight: 700;
+      margin: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    
     .container {
       display: flex;
-      gap: 20px; /* Add space between the two containers */
+      gap: 20px;
       width: 100%;
-      height: calc(100% - 60px); /* Adjust height to fit within the 600px window minus padding */
+      height: calc(100% - 60px);
       max-width: 800px;
       box-sizing: border-box;
     }
 
     .left {
-      flex: 3; /* Take 3/5 of the available space */
-      min-width: 300px; /* Ensure it doesn’t shrink too much */
+      flex: 3;
+      min-width: 300px;
       background: white;
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -53,23 +76,44 @@
     }
 
     .right {
-      flex: 2; /* Take 2/5 of the available space */
-      min-width: 200px; /* Ensure it doesn’t shrink too much */
+      flex: 2;
+      min-width: 200px;
       background: white;
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
     }
+
+    #clear-list {
+      align-self: center;
+      margin-top: auto;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
     .title {
       font-size: 36px;
-      margin-bottom: 20px;
-      color: #007bff;
+      color: #1565c0;
+      text-align: center;
+      font-weight: 700;
+      margin: 0;
     }
+
     table {
-      width: 100%; /* Ensure the table fills the container width */
+      width: 100%;
       margin: 20px 0;
       border-collapse: collapse;
-      table-layout: fixed; /* Equalize column widths for consistent layout */
+      table-layout: fixed;
     }
 
     table th, table td {
@@ -80,59 +124,59 @@
     }
 
     table th {
-      background-color: #007bff;
+      background-color: #1976d2;
       color: white;
       font-size: 14px;
     }
 
     table td input {
-      width: 95%; /* Adjust input fields to take most of the cell width */
-      padding: 4px; /* Reduce padding inside the input field */
-      font-size: 12px; /* Smaller font size for better fit */
-      box-sizing: border-box; /* Ensure padding doesn’t affect input size */
+      width: 95%;
+      padding: 4px;
+      font-size: 12px;
+      box-sizing: border-box;
     }
 
     table {
-      width: 100%; /* Full width of the container */
-      table-layout: fixed; /* Ensure column widths are consistent */
+      width: 100%;
+      table-layout: fixed;
     }
-
-    th:nth-child(1), td:nth-child(1) { width: 30%; } /* First Name column */
-    th:nth-child(2), td:nth-child(2) { width: 30%; } /* Last Name column */
-    th:nth-child(3), td:nth-child(3) { width: 40%; } /* Contract column */
-
+    
     .actions {
       text-align: center;
     }
+
     .actions button {
       padding: 10px 20px;
-      background-color: #007bff;
+      background-color: #1976d2;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
+
     .actions button:hover {
-      background-color: #0056b3;
+      background-color: #0d47a1;
     }
 
     #add-row {
-      background-color: #007bff; /* Blue background */
-      color: white; /* White text */
-      border: none; /* Remove border */
-      border-radius: 4px; /* Rounded corners */
-      padding: 5px 10px; /* Padding for better appearance */
-      cursor: pointer; /* Pointer cursor on hover */
-      font-size: 12px; /* Font size */
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
     }
 
     #add-row:hover {
-      background-color: #0056b3; /* Darker blue on hover */
+      background-color: #0d47a1;
     }
+
     .status-list {
+      font-size: 12px;
       display: flex;
       flex-direction: column;
-      height: 100%; /* Ensures it spans the full height of the container */
+      height: 100%;
     }
 
     .status-list h3 {
@@ -141,24 +185,26 @@
     
     .status-list .section {
       flex: 1;
-      overflow-y: auto; /* Handles scrolling if the content overflows */
+      overflow-y: auto;
     }
 
-    .status-list .success-section {
-      align-self: flex-start; /* Align the "Successfully Added Patients" section at the top */
+    .status-list ul li.success {
+      color: green;
     }
 
-    .status-list .duplicate-section {
-      align-self: flex-end; /* Align the "Duplicate Patients" section at the bottom */
+    .status-list ul li.duplicate {
+      color: red;
     }
   </style>
 </head>
+
 <body>
-  <div class="top-buttons">
-    <button onclick="location.href='dashboard.html'">Dashboard</button>
-    <button onclick="location.href='manage_patients.html'">Back</button>
+  <div class="header">
+    <button onclick="location.href='../../dashboard/dashboard.html'">Dashboard</button>
+    <button onclick="location.href='../manage_patients.html'">Back</button>
+    <div class="title">Admissions</div>
   </div>
-  <div class="title">Admissions</div>
+    
   <div class="container">
     <div class="left">
       <table id="admissions-table">
@@ -189,6 +235,7 @@
           <!-- Duplicate patients will appear here -->
         </ul>
       </div>
+      <button id="clear-list">Clear List</button>
     </div>
   </div>
   <script>
@@ -196,7 +243,7 @@
     const successList = document.querySelector("#success-list");
     const duplicateList = document.querySelector("#duplicate-list");
 
-    // Add a default row
+    
     function addRow(firstName = "", lastName = "", contract = "") {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -207,17 +254,17 @@
       tableBody.appendChild(row);
     }
 
-    // Add initial rows
+    
     for (let i = 0; i < 5; i++) {
       addRow();
     }
 
-    // Add new row on button click
+    
     document.getElementById("add-row").addEventListener("click", () => {
       addRow();
     });
 
-    // Add all patients to the database
+    
     document.getElementById("add-all").addEventListener("click", async () => {
       const rows = Array.from(tableBody.querySelectorAll("tr"));
       const patients = rows.map(row => {
@@ -229,8 +276,10 @@
         };
       });
 
+      document.getElementById("clear-list").addEventListener("click", () => {
       successList.innerHTML = "";
       duplicateList.innerHTML = "";
+      });
 
       for (const patient of patients) {
         if (patient.first_name && patient.last_name && patient.contract) {
@@ -257,6 +306,13 @@
           }
         }
       }
+      
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll("input");
+        inputs.forEach(input => {
+          input.value = "";
+        });
+      });
     });
   </script>
 </body>

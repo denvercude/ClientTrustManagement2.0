@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Trust Management - Manage Patients</title>
+  <title>Client Trust Management - Manage Patients in Access</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: #f4f9ff;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -18,54 +19,65 @@
     }
     .header {
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #e3f2fd;
       padding: 20px;
       box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .header button {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
       padding: 10px 15px;
-      background-color: #007bff;
+      background-color: #1976d2;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .header button:hover {
-      background-color: #0056b3;
+      background-color: #1565c0;
     }
     .title {
       font-size: 36px;
-      color: #007bff;
+      color: #1565c0;
       text-align: center;
-      flex-grow: 1; /* Ensures the title takes up remaining space */
+      font-weight: 700;
       margin: 0;
     }
     .container {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
     }
     .task-card {
-      background: white;
+      background: #ffffff;
       padding: 20px;
-      margin: 10px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 250px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.2s;
-      display: inline-block;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .task-card:hover {
       transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
     .task-card h3 {
       margin: 0;
       margin-bottom: 10px;
-      font-size: 18px;
-      color: #007bff;
+      font-size: 20px;
+      color: #1976d2;
+      font-weight: 500;
     }
     .task-card p {
       margin: 0;
@@ -76,8 +88,8 @@
 </head>
 <body>
   <div class="header">
-    <button onclick="location.href='dashboard.html'">Dashboard</button>
-    <div class="title">Manage Patients</div> <!-- Title aligned with buttons -->
+    <button onclick="location.href='../dashboard/dashboard.html'">Dashboard</button>
+    <div class="title">Manage Patients in Access</div>
   </div>
   <div class="container">
     <div class="task-card" id="admissions-btn">
@@ -96,16 +108,16 @@
   <script>
     // Navigation to Admissions Page
     document.getElementById("admissions-btn").addEventListener("click", () => {
-      window.electronAPI.navigateTo("admissions.html"); // Navigate to Admissions page
+      window.electronAPI.navigateTo("manage_patients/admissions/admissions.html"); 
     });
 
     // Navigation to Discharges Page
     document.getElementById("discharges-btn").addEventListener("click", () => {
-      window.electronAPI.navigateTo("discharges.html"); // Navigate to Discharges page
+      window.electronAPI.navigateTo("manage_patients/discharges/discharges.html");
     });
 
     document.getElementById("update-phase-btn").addEventListener("click", () => {
-      window.electronAPI.navigateTo("update_phase.html"); // Navigate to Admissions page
+      window.electronAPI.navigateTo("manage_patients/update_phase/update_phase.html");
     });
   </script>
 </body>
