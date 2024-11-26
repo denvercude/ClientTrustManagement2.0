@@ -1,242 +1,49 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Trust Management - Update Phase</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .top-buttons {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      gap: 10px;
-    }
-    .top-buttons button {
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .top-buttons button:hover {
-      background-color: #0056b3;
-    }
-    .container {
-      display: flex;
-      gap: 20px;
-      width: 100%;
-      max-width: 800px;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../shared_css/manage_patients_styles/styles.css">
+    <title>Client Trust Management - Update Phase</title>
+  </head>
 
-    .left {
-      flex: 3;
-      min-width: 300px;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    .right {
-      flex: 2;
-      min-width: 200px;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    .title {
-      font-size: 36px;
-      margin-bottom: 20px;
-      color: #007bff;
-    }
-    table {
-      width: 100%;
-      table-layout: fixed;
-      margin: 20px 0;
-      border-collapse: collapse;
-    }
-
-    table th, table td {
-      padding: 5px;
-      text-align: left;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    table th {
-      background-color: #007bff;
-      color: white;
-      font-size: 14px;
-    }
-
-    table td input {
-      width: 95%;
-      padding: 4px;
-      font-size: 12px;
-      box-sizing: border-box;
-    }
-
-    .actions {
-      text-align: center;
-    }
-    .actions button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .actions button:hover {
-      background-color: #0056b3;
-    }
-
-    .status-list {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .status-list h3 {
-      color: #333;
-    }
-
-    .status-list ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      overflow-y: auto;
-      max-height: 200px;
-    }
-
-    .status-list ul li {
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .status-list ul li.success {
-      color: green;
-    }
-
-    .status-list ul li.error {
-      color: red;
-    }
-  </style>
-</head>
-<body>
-  <div class="top-buttons">
-    <button onclick="location.href='../../dashboard/dashboard.html'">Dashboard</button>
-    <button onclick="location.href='../manage_patients.html'">Back</button>
-  </div>
-  <div class="title">Update Patient Phase</div>
-  <div class="container">
-    <div class="left">
-      <table id="phase-table">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>New Phase</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Rows will be dynamically added -->
-        </tbody>
-      </table>
-      <button id="add-row">Add Row</button>
-      <div class="actions">
-        <button id="update-all">Update All</button>
+  <body>
+    <div class="container">
+      <div class="left">
+        <table id="phase-table">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>New Phase</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be dynamically added -->
+          </tbody>
+        </table>
+        <button id="add-row">Add Row</button>
+        <div class="actions">
+          <button id="update-all">Update All</button>
+        </div>
+      </div>
+      <div class="right">
+        <div class="status-list">
+          <h3>Successfully Updated:</h3>
+          <ul id="success-list">
+            <!-- Successfully discharged patients will appear here -->
+          </ul>
+          <h3>Errors:</h3>
+          <ul id="error-list">
+            <!-- Error messages will appear here -->
+          </ul>
+        </div>
+        <button id="clear-list">Clear List</button>
       </div>
     </div>
-    <div class="right">
-      <div class="status-list">
-        <h3>Successfully Updated:</h3>
-        <ul id="success-list"></ul>
-        <h3>Errors:</h3>
-        <ul id="error-list"></ul>
-      </div>
-    </div>
-  </div>
-  <script>
-    const tableBody = document.querySelector("#phase-table tbody");
-    const successList = document.querySelector("#success-list");
-    const errorList = document.querySelector("#error-list");
 
-    function addRow(firstName = "", lastName = "", phase = "") {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><input type="text" placeholder="First Name" value="${firstName}" /></td>
-        <td><input type="text" placeholder="Last Name" value="${lastName}" /></td>
-        <td><input type="text" placeholder="New Phase" value="${phase}" /></td>
-      `;
-      tableBody.appendChild(row);
-    }
-
-    for (let i = 0; i < 5; i++) {
-      addRow();
-    }
-
-    document.getElementById("add-row").addEventListener("click", () => addRow());
-
-    document.getElementById("update-all").addEventListener("click", async () => {
-      const rows = Array.from(tableBody.querySelectorAll("tr"));
-      const patients = rows.map(row => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          first_name: inputs[0].value.trim(),
-          last_name: inputs[1].value.trim(),
-          new_phase: parseInt(inputs[2].value.trim(), 10),
-        };
-      });
-
-      successList.innerHTML = "";
-      errorList.innerHTML = "";
-
-      for (const patient of patients) {
-        if (patient.first_name && patient.last_name && !isNaN(patient.new_phase)) {
-          try {
-            const response = await fetch("http://127.0.0.1:8000/update-phase/", {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(patient),
-            });
-            const result = await response.json();
-            if (response.ok) {
-              const li = document.createElement("li");
-              li.textContent = `${patient.first_name} ${patient.last_name}`;
-              li.classList.add("success");
-              successList.appendChild(li);
-            } else {
-              const li = document.createElement("li");
-              li.textContent = `${patient.first_name} ${patient.last_name} - Error: ${result.detail || "Unknown error"}`;
-              li.classList.add("error");
-              errorList.appendChild(li);
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            const li = document.createElement("li");
-            li.textContent = `${patient.first_name} ${patient.last_name} - Error: Network or Server Error`;
-            li.classList.add("error");
-            errorList.appendChild(li);
-          }
-        }
-      }
-    });
-  </script>
-</body>
+    <script src="../../shared_js/manage_patients_js/shared.js"></script>
+    <script src="update_phase.js"></script>
+  </body>
 </html>

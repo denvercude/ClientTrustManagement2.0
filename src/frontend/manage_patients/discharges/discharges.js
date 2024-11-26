@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fields = ["First Name", "Last Name", "Reason for Discharge"];
 
-  // Add 5 default rows
   for (let i = 0; i < 5; i++) {
     addRow(tableBody, fields);
   }

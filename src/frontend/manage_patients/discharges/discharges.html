@@ -1,48 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../shared_css/manage_patients_styles/styles.css">
-  <title>Client Trust Management - Discharges</title>
-</head>
 
-<body>
-  <div class="container">
-    <div class="left">
-      <table id="discharges-table">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Reason for Discharge</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Default rows will be dynamically added -->
-        </tbody>
-      </table>
-      <button id="add-row">Add Row</button>
-      <div class="actions">
-        <button id="discharge-all">Discharge All Patients</button>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../shared_css/manage_patients_styles/styles.css">
+    <title>Client Trust Management - Discharges</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="left">
+        <table id="discharges-table">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Reason for Discharge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Default rows will be dynamically added -->
+          </tbody>
+        </table>
+        <button id="add-row">Add Row</button>
+        <div class="actions">
+          <button id="discharge-all">Discharge All Patients</button>
+        </div>
+      </div>
+      <div class="right">
+        <div class="status-list">
+          <h3>Successfully Discharged Patients:</h3>
+          <ul id="success-list">
+            <!-- Successfully discharged patients will appear here -->
+          </ul>
+          <h3>Errors:</h3>
+          <ul id="error-list">
+            <!-- Error messages will appear here -->
+          </ul>
+        </div>
+        <button id="clear-list">Clear List</button>
       </div>
     </div>
-    <div class="right">
-      <div class="status-list">
-        <h3>Successfully Discharged Patients:</h3>
-        <ul id="success-list">
-          <!-- Successfully discharged patients will appear here -->
-        </ul>
-        <h3>Errors:</h3>
-        <ul id="error-list">
-          <!-- Error messages will appear here -->
-        </ul>
-      </div>
-      <button id="clear-list">Clear List</button>
-    </div>
-  </div>
-  
-  <script src="../../shared_js/manage_patients_js/shared.js"></script>
-  <script src="discharges.js"></script>
-</body>
+    
+    <script src="../../shared_js/manage_patients_js/shared.js"></script>
+    <script src="discharges.js"></script>
+  </body>
 </html>
