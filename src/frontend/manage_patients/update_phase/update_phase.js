@@ -25,9 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
           new_phase: parseInt(inputs[2].value.trim(), 10),
         };
       });
-  
-      successList.innerHTML = "";
-      errorList.innerHTML = "";
 
       for (const patient of patients) {
         if (patient.first_name && patient.last_name && !isNaN(patient.new_phase)) {
@@ -66,5 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     });
+
+    document.getElementById("clear-list").addEventListener("click", async () => {
+      clearStatusLists()
+    });
+
   });
   

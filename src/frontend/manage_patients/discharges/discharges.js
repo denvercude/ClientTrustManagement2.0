@@ -2,9 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadHeader("Discharges");
 
   const tableBody = document.querySelector("#discharges-table tbody");
-  const successList = document.querySelector("#success-list");
-  const errorList = document.querySelector("#error-list");
-
   const fields = ["First Name", "Last Name", "Reason for Discharge"];
 
   for (let i = 0; i < 5; i++) {
@@ -26,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     });
 
-    clearStatusLists();
     await sendPatients(patients, "http://127.0.0.1:8000/discharge-patient/", "PUT");
 
     rows.forEach(row => {
@@ -36,4 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
+
+  document.getElementById("clear-list").addEventListener("click", async () => {
+    clearStatusLists()
+  });
+
 });

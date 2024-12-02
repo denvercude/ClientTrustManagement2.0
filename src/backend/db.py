@@ -209,6 +209,13 @@ def update_phase(first_name, last_name, new_phase):
     Returns:
         dict: A response dictionary containing a message and a status code.
     """
+
+    if int(new_phase) < 0 or int(new_phase) > 4:
+        return {
+                "message": f"Invalid phase number: {new_phase}.",
+                "status": "failure"
+            }
+
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -246,6 +253,32 @@ def update_phase(first_name, last_name, new_phase):
             WHERE ClientID = ?
             """,
             (new_phase, client_id)
+        )
+
+        # Commit the transaction
+        conn.commit()
+
+        # Generate a transaction entry for the discharge
+        # Find the next transaction ID
+        cursor.execute("SELECT MAX(TransactionID) FROM Transactions")
+        max_transaction_id = cursor.fetchone()[0]
+        new_transaction_id = (max_transaction_id + 1) if max_transaction_id else 1
+
+        # Get today's date in the required format
+        transaction_date = datetime.now().strftime("%m/%d/%Y")
+
+        journal_memo = f"Phase Update: {new_phase}"
+
+        # Insert the transaction entry
+        cursor.execute(
+            """
+            INSERT INTO Transactions (
+                TransactionID, TransactionDate, TransactionDescription,
+                DepositAmount, WithdrawalAmount, ClientID
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (new_transaction_id, transaction_date, journal_memo, 0, 0, client_id)
         )
 
         # Commit the transaction

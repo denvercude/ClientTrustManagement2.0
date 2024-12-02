@@ -22,8 +22,7 @@ function loadHeader(pageTitle) {
 
   async function sendPatients(patients, url, method = "POST") {
     const successList = document.querySelector("#success-list");
-    const errorList = document.querySelector("#error-list");
-  
+    
     for (const patient of patients) {
       if (Object.values(patient).every(value => value.trim())) {
         try {
