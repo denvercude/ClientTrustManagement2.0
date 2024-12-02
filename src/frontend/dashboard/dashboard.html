@@ -1,59 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Trust Management - Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    .navbar {
-      background-color: #007bff;
-      padding: 15px;
-      color: white;
-      text-align: center;
-      font-size: 24px;
-    }
-    .container {
-      padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .task-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      width: 250px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .task-card:hover {
-      transform: scale(1.05);
-    }
-    .task-card h3 {
-      margin: 0;
-      margin-bottom: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="dashboard.css">
 </head>
+
 <body>
-  <div class="navbar">
-    Dashboard
+  <div class="header">
+    <button onclick="location.href='../index/index.html'">Log Out</button>
+    <div class = "title">Dashboard</div>
   </div>
   <div class="container">
-    <div class="task-card" onclick="window.electronAPI.navigateTo('manage_patients/manage_patients.html')">
+    <div class="task-card" id="manage-patients-btn">
       <h3>Patient Database Management</h3>
-      <p>Manage patient records and updates in Access Database.</p>
+      <p>Add/Remove/Update patients in Access.</p>
     </div>
     <!-- Add more task cards here -->
   </div>
+
+  <script src="dashboard.js"></script>
 </body>
 </html>
