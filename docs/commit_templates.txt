@@ -1,0 +1,46 @@
+Standard Commit Message Template
+Feature Commits:
+
+Template: feat(<scope>): <short summary>
+Example: feat(authentication): add JWT token support
+Description: Use when adding a new feature or functionality to your project.
+Bug Fixes:
+
+Template: fix(<scope>): <short summary>
+Example: fix(login): correct input validation error
+Description: Use when making changes that fix a bug.
+Documentation:
+
+Template: docs(<scope>): <short summary>
+Example: docs(readme): update installation instructions
+Description: Use when adding or updating documentation.
+Style Changes:
+
+Template: style(<scope>): <short summary>
+Example: style(css): improve grid layout
+Description: Use for changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).
+Refactoring:
+
+Template: refactor(<scope>): <short summary>
+Example: refactor(user service): simplify code by removing redundant condition
+Description: Use when refactoring code without changing its behavior.
+Performance Improvements:
+
+Template: perf(<scope>): <short summary>
+Example: perf(database): optimize query performance
+Description: Use when making changes that improve performance.
+Tests:
+
+Template: test(<scope>): <short summary>
+Example: test(api): add tests for user authentication
+Description: Use when adding missing tests or correcting existing tests.
+Chores:
+
+Template: chore(<scope>): <short summary>
+Example: chore(build): update build script
+Description: Use for routine tasks such as updates to the build process, package manager configurations, etc.
+Breaking Changes:
+
+Template: BREAKING CHANGE: <description>
+Example: BREAKING CHANGE: changes the authentication endpoint URL
+Description: Include as part of the footer section in a commit message when making a change that causes backward incompatibility.
