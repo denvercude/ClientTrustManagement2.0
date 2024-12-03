@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from .db import get_connection, add_patient, discharge_patient, update_phase
+from .excel_utils import create_deposits_sheet
 from pydantic import BaseModel
+import pandas as pd
 
 
 app = FastAPI()
@@ -21,6 +23,9 @@ class UpdatePhaseRequest(BaseModel):
     first_name: str
     last_name: str
     new_phase: int
+
+class CreateDepositRequest(BaseModel):
+    deposits: list
 
 # Root endpoint to provide a welcome message
 @app.get("/")
@@ -136,3 +141,12 @@ async def update_phase_endpoint(patient: UpdatePhaseRequest):
     except Exception as e:
         # Handle unexpected errors
         raise HTTPException(status_code=400, detail=f"Error updating phase: {e}")
+    
+@app.post("/create-deposits/")
+async def create_deposits(deposit_data: CreateDepositRequest):
+    try:
+        df = pd.DataFrame(deposit_data.deposits)
+        response = create_deposits_sheet(df)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

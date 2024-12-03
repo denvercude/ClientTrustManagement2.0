@@ -10,7 +10,7 @@
 <body>
   <div class="container">
     <div class="left">
-      <table id="deposits-table">
+      <table id="deposits-sheet-table">
         <thead>
           <tr>
             <th>First Name</th>
@@ -28,21 +28,9 @@
         <button id="add-all">Add All Deposits</button>
       </div>
     </div>
-    <div class="right">
-      <div class="status-list">
-        <h3>Successfully Added Deposits:</h3>
-        <ul id="success-list">
-          <!-- Successfully added patients will appear here -->
-        </ul>
-        <h3>Errors:</h3>
-        <ul id="error-list">
-          <!-- Error messages will appear here -->
-        </ul>
-      </div>
-      <button id="clear-list">Clear List</button>
-    </div>
   </div>
-  
+
+  <script src="../../shared_js/deposits_js/shared.js"></script>
   <script src="deposits_sheet.js"></script>
 </body>
 </html>

@@ -290,14 +290,10 @@ def update_phase(first_name, last_name, new_phase):
         }
 
     except pyodbc.Error as e:
-        print(f"Error updating phase: {e}")
         return {
-            "message": "An error occurred while updating the phase.",
+            "message": f"Error updating phase: {e}",
             "status": "error"
         }
     finally:
         cursor.close()
         conn.close()
-
-def add_deposits(first_name, last_name, type, amount):
-    pass
