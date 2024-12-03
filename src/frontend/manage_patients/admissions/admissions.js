@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadHeader("Admissions");
 
   const tableBody = document.querySelector("#admissions-table tbody");
-  const successList = document.querySelector("#success-list");
-  const errorList = document.querySelector("#error-list");
 
   const fields = ["First Name", "Last Name", "Contract"];
 

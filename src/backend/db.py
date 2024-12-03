@@ -298,3 +298,6 @@ def update_phase(first_name, last_name, new_phase):
     finally:
         cursor.close()
         conn.close()
+
+def add_deposits(first_name, last_name, type, amount):
+    pass
