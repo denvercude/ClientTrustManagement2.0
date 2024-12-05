@@ -1,8 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from .db import get_connection, add_patient, discharge_patient, update_phase
 from .excel_utils import create_deposits_sheet
 from pydantic import BaseModel
 import pandas as pd
+import logging
 
 
 app = FastAPI()
@@ -143,10 +145,38 @@ async def update_phase_endpoint(patient: UpdatePhaseRequest):
         raise HTTPException(status_code=400, detail=f"Error updating phase: {e}")
     
 @app.post("/create-deposits/")
-async def create_deposits(deposit_data: CreateDepositRequest):
+async def create_deposits(deposit_data: CreateDepositRequest, request: Request):
     try:
+        # Log the incoming request for debugging purposes
+        logging.info(f"Received request at {request.url} with data: {deposit_data.deposits}")
+        
+        # Validate and create a DataFrame from the provided deposit data
+        if not deposit_data.deposits or not isinstance(deposit_data.deposits, list):
+            raise ValueError("Invalid deposit data: expected a non-empty list of deposits.")
         df = pd.DataFrame(deposit_data.deposits)
+        
+        # Log DataFrame creation for debugging
+        logging.info(f"DataFrame created with {len(df)} entries.")
+
+        # Attempt to process the deposits sheet creation
         response = create_deposits_sheet(df)
-        return response
+        
+        # If processing was successful, return the response
+        logging.info("Deposit sheet successfully created.")
+        return JSONResponse(status_code=200, content=response)
+
+    except ValueError as ve:
+        # Handle specific known errors, such as missing or invalid input data
+        logging.error(f"Value error: {str(ve)}")
+        raise HTTPException(status_code=400, detail={"message": str(ve)})
+
+    except FileNotFoundError as fnfe:
+        # Handle file not found errors, likely due to missing template file
+        logging.error(f"File not found: {str(fnfe)}")
+        raise HTTPException(status_code=404, detail={"message": str(fnfe)})
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Log unexpected errors
+        logging.error(f"Unexpected server error: {str(e)}")
+        # Catch-all for any other exceptions, considered as server-side errors
+        raise HTTPException(status_code=500, detail={"message": str(e)})

@@ -17,34 +17,37 @@ document.addEventListener("DOMContentLoaded", () => {
         const rows = Array.from(tableBody.querySelectorAll("tr"));
         const deposits = rows.map(row => {
             const inputs = row.querySelectorAll("input");
+            let amount = parseFloat(inputs[3].value.trim());
+            if (isNaN(amount)) {
+                amount = 0;
+            }
             return {
                 first_name: inputs[0].value.trim(),
                 last_name: inputs[1].value.trim(),
                 type: inputs[2].value.trim(),
-                amount: inputs[3].value.trim()
+                amount: amount
             };
         });
-    
+
         try {
             const response = await fetch('http://127.0.0.1:8000/create-deposits/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ deposits })
+                body: JSON.stringify({deposits})
             });
-    
+
             const result = await response.json();
             if (response.ok) {
-                console.log(result.message);
-                alert("Deposit sheet created successfully");
+                alert(result.message);
             } else {
-                console.error('Error Response:', result);
-                alert("Failed to create deposit sheet: " + (result.detail || "Unknown error"));
+                const errorMessage = result.message || result.detail || "An unknown error occurred";
+                throw new Error(`Server responded with status: ${response.status}, Error: ${errorMessage}`);
             }
         } catch (error) {
             console.error('Fetch Error:', error);
-            alert("An error occurred while creating the deposit sheet.");
+            alert("An error occurred while communicating with the server: " + (error.message || "No detailed error message available"));
         }
     });
 
