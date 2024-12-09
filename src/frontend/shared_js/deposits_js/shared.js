@@ -19,3 +19,8 @@ function addRow(tableBody, fields, values = []) {
     });
     tableBody.appendChild(row);
 }
+
+function clearStatusLists() {
+    document.querySelector("#success-list").innerHTML = "";
+    document.querySelector("#error-list").innerHTML = "";
+  }
