@@ -5,6 +5,8 @@ from .excel_utils import create_deposits_sheet
 from pydantic import BaseModel
 import pandas as pd
 import logging
+from .api_client import APIClient
+from .comcash_utils import get_current_accounts
 
 
 app = FastAPI()
@@ -164,3 +166,18 @@ async def create_deposits(deposit_data: CreateDepositRequest, request: Request):
     except Exception as e:
         logging.error(f"Unexpected server error: {str(e)}")
         raise HTTPException(status_code=500, detail={"message": str(e)})
+
+@app.get("/current-accounts/")
+async def get_current_accounts_endpoint():
+    """
+    Endpoint to retrieve current accounts with status 1 and customer_type 4.
+    Returns:
+        dict: List of current accounts or an error message.
+    """
+    try:
+        # Call the function from comcash_utils
+        accounts = get_current_accounts()
+        return {"accounts": accounts}
+    except RuntimeError as e:
+        # Handle runtime errors from the utility function
+        raise HTTPException(status_code=500, detail=str(e))

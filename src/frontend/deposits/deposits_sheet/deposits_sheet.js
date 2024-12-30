@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("add-all").addEventListener("click", async () => {
         const rows = Array.from(tableBody.querySelectorAll("tr"));
-        const validTypes = ["Credit", "Visa", "Master", "Amex", "Cash", "Check"];
+        const validTypes = ["Credit", "Visa", "Master", "Amex", "Cash", "Check", ""];
         const deposits = [];
         const successList = document.querySelector("#success-list");
         const errorList = document.querySelector("#error-list");
