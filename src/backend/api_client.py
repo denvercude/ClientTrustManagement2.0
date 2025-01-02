@@ -98,3 +98,56 @@ class APIClient:
             else:
                 print(f"Failed to fetch customer list. Status Code: {response.status_code}")
                 return None
+    
+    def create_new_customer(self, first_name, last_name):
+        if not self.is_token_valid():
+            print("Token expired or invalid. Authenticating...")
+            self.authenticate()
+
+        if self.token:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {self.token}'
+            }
+
+            payload = json.dumps({
+                "countryPhoneCode": 1,
+                "phone": 0000000000,
+                "firstName": first_name,
+                "lastName": last_name,
+                "locationId": 1
+            })
+
+            response = requests.post(self.create_customer_url, headers=headers, data=payload)
+
+            if response.status_code == 200:
+                print("Customer created successfully.")
+                return response.json()
+            else:
+                print(f"Failed to create customer. Status Code: {response.status_code}")
+                return None
+    
+    def update_customer_type(self, customer_id):
+        if not self.is_token_valid():
+            print("Token expired or invalid. Authenticating...")
+            self.authenticate()
+
+        if self.token:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {self.token}'
+            }
+
+            payload = json.dumps({
+                "id": customer_id,
+                "typeId": "4"
+            })
+
+            response = requests.post(self.update_customer_url, headers=headers, data=payload)
+
+            if response.status_code == 200:
+                print("Customer type updated successfully.")
+                return response.json()
+            else:
+                print(f"Failed to update customer type. Status Code: {response.status_code}")
+                return None

@@ -6,6 +6,7 @@ import shutil
 import os
 from dateutil.relativedelta import relativedelta
 import holidays
+from openpyxl.styles import Alignment
 
 load_dotenv()
 
@@ -26,30 +27,45 @@ def create_deposits_sheet(df):
         deposit_date = get_next_workday(today)
         year = deposit_date.year
         today_date_str = deposit_date.strftime('%m-%d-%y')
+        today_date_formatted = deposit_date.strftime('%m/%d/%Y')  # New format for cell B5
 
+        # Paths for the current year and the previous year
         year_dir = os.path.join(DEP_PATH, f"{year} Deposits")
+        prev_year_dir = os.path.join(DEP_PATH, f"{year - 1} Deposits")
+        template_path = os.path.join(year_dir, 'template.xlsx')
+        prev_template_path = os.path.join(prev_year_dir, 'template.xlsx')
+
+        # Create the new year's folder if it doesn't exist
         if not os.path.exists(year_dir):
             os.makedirs(year_dir)
 
+        # Copy the template from the previous year if it exists and not already in the new folder
+        if not os.path.exists(template_path):
+            if os.path.exists(prev_template_path):
+                shutil.copy(prev_template_path, template_path)
+            else:
+                raise FileNotFoundError(f"Template file not found in the previous year's folder: {prev_template_path}")
+
+        # Create the new deposit sheet
         destination_file = os.path.join(year_dir, f"Deposits for Client Trust {today_date_str}.xlsx")
 
         if os.path.exists(destination_file):
             raise FileExistsError(f"The file '{destination_file}' already exists. Please check the destination folder.")
 
-        template_path = os.path.join(year_dir, 'template.xlsx')
-        if not os.path.exists(template_path):
-            raise FileNotFoundError("Template file not found")
-
         df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
         if df['amount'].isnull().any():
             raise ValueError("Amount conversion failed; non-numeric data found.")
-        
+
         shutil.copy(template_path, destination_file)
 
         workbook = openpyxl.load_workbook(destination_file)
 
         sheet1 = workbook['Sheet1']
         sheet2 = workbook['Sheet2']
+
+        # Insert today's date in cell B5 of Sheet1
+        sheet1['B5'].value = today_date_formatted
+        sheet1['B5'].alignment = Alignment(horizontal='center', vertical='center')
 
         row_sheet1 = 8
         row_sheet2 = 8

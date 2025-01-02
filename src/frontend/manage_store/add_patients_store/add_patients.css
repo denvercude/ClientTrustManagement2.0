@@ -61,30 +61,34 @@ body {
 
   .left {
     flex: 3;
-    min-width: 200px;
+    min-width: 250px;
     background: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-  }
-
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+}
   .right {
     flex: 3;
-    min-width: 200px;
+    min-width: 250px;
     background: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    
   }
 
   .middle {
     flex: 3;
-    min-width: 200px;
+    min-width: 250px;
     background: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
   }
 
   .title {
@@ -110,4 +114,28 @@ body {
 
   .actions button:hover {
     background-color: #0d47a1;
+  }
+
+  #current-accounts-list li {
+    font-size: 14px; /* Adjust the size as needed */
+    line-height: 1.2; /* Adjust spacing between lines */
+    white-space: nowrap; /* Prevent wrapping to the next line */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis; /* Add '...' if text overflows */
+  }
+
+  #current-accounts-list {
+    text-align: left; /* Aligns all text to the left */
+  }
+
+  #new-accounts-list li {
+    font-size: 14px; /* Adjust the size as needed */
+    line-height: 1.2; /* Adjust spacing between lines */
+    white-space: nowrap; /* Prevent wrapping to the next line */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis; /* Add '...' if text overflows */
+  }
+
+  #new-accounts-list {
+    text-align: left; /* Aligns all text to the left */
   }

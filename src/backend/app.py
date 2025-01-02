@@ -6,7 +6,7 @@ from pydantic import BaseModel
 import pandas as pd
 import logging
 from .api_client import APIClient
-from .comcash_utils import get_current_accounts
+from .comcash_utils import get_current_accounts, get_new_accounts
 
 
 app = FastAPI()
@@ -177,6 +177,21 @@ async def get_current_accounts_endpoint():
     try:
         # Call the function from comcash_utils
         accounts = get_current_accounts()
+        return {"accounts": accounts}
+    except RuntimeError as e:
+        # Handle runtime errors from the utility function
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/new-accounts/")
+async def get_current_accounts_endpoint():
+    """
+    Endpoint to retrieve accounts to be added.
+    Returns:
+        dict: List of current accounts or an error message.
+    """
+    try:
+        # Call the function from comcash_utils
+        accounts = get_new_accounts()
         return {"accounts": accounts}
     except RuntimeError as e:
         # Handle runtime errors from the utility function
