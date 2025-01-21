@@ -86,7 +86,7 @@ def add_new_accounts():
 
     if deleted_customer_list is None or active_customer_list is None:
         print("Failed to fetch customer lists.")
-        return []
+        return [], []
 
     all_customers = {
         (customer['firstName'], customer['lastName'])
@@ -100,6 +100,7 @@ def add_new_accounts():
             new_accounts.append({'firstName': first_name, 'lastName': last_name})
 
     successfully_added_accounts = []
+    failed_accounts = []
     for account in new_accounts:
         try:
             # Create the new customer
@@ -108,7 +109,7 @@ def add_new_accounts():
                 first_name=account['firstName'],
                 last_name=account['lastName']
             )
-            
+
             if new_customer and "id" in new_customer:
                 # Update customer type
                 print(f"Updating customer type for: {account['firstName']} {account['lastName']}")
@@ -116,7 +117,36 @@ def add_new_accounts():
                 successfully_added_accounts.append(account)
             else:
                 print(f"Failed to create customer for: {account['firstName']} {account['lastName']}")
+                failed_accounts.append(account)
         except Exception as e:
             print(f"Error processing account {account['firstName']} {account['lastName']}: {e}")
+            failed_accounts.append({'account': account, 'error': str(e)})
 
-    return successfully_added_accounts
+    return successfully_added_accounts, failed_accounts
+
+def get_old_accounts():
+    client = APIClient()
+    cursor = get_connection().cursor()
+
+    query = '''
+        SELECT FirstName, LastName, Phase
+        FROM Balance
+        WHERE Phase IN ('2', '3', '4');
+    '''
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    active_customer_list = client.get_customer_list(1, 4)
+
+    all_customers = {
+        (customer['firstName'], customer['lastName'])
+        for customer in active_customer_list
+    }
+
+    old_accounts = []
+    for row in rows:
+        first_name, last_name, phase = row
+        if (first_name, last_name) in all_customers:
+            old_accounts.append({'firstName': first_name, 'lastName': last_name})
+
+    return old_accounts

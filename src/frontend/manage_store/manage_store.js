@@ -6,6 +6,6 @@ document.getElementById("add-patients-btn").addEventListener("click", () => {
   window.electronAPI.navigateTo("manage_store/add_patients_store/add_patients.html"); 
 });
 
-document.getElementById("create-store-list-btn").addEventListener("click", () => {
+document.getElementById("remove-patients-btn").addEventListener("click", () => {
   window.electronAPI.navigateTo("manage_store/remove_patients_store/remove_patients.html"); 
 });

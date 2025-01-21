@@ -144,7 +144,7 @@ def discharge_patient(first_name, last_name, reason_for_discharge):
         # Check if the patient is already discharged.
         if int(phase) == 4:
             return {
-                "message": f"Patient '{first_name} {last_name}' has already been discharged.",
+                "message": f"Patient already discharged.",
                 "status": "failure"
             }
 
